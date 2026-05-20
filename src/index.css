@@ -1,0 +1,72 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;500&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Roboto", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  --color-brand-background: #f6f8fb;
+  --color-brand-on-background: #172033;
+  --color-brand-surface: #ffffff;
+  --color-brand-surface-soft: #eaf2ff;
+  --color-brand-primary: #2563eb;
+  --color-brand-primary-strong: #1d4ed8;
+  --color-brand-outline: #dbe4f0;
+  --color-brand-success: #16a34a;
+  --color-brand-success-soft: #e9f8ef;
+  --color-brand-dark-surface: #0f172a;
+  --color-brand-dark-panel: #111827;
+  --color-brand-dark-on-surface-muted: #cbd5e1;
+  
+  --radius-brand-card: 20px;
+  --radius-brand-panel: 28px;
+  
+  --shadow-brand-card: 0 18px 44px rgba(15, 23, 42, 0.08);
+
+  @keyframes slow-scroll {
+    from { transform: scale(1.2) translateX(0); }
+    to { transform: scale(1.2) translateX(-10%); }
+  }
+
+  @keyframes float {
+    0% { transform: translateY(0) rotate(0deg); }
+    33% { transform: translateY(-5px) rotate(1deg); }
+    66% { transform: translateY(3px) rotate(-1deg); }
+    100% { transform: translateY(0) rotate(0deg); }
+  }
+
+  @keyframes drift {
+    0% { transform: translateX(0); opacity: 0; }
+    10% { opacity: 0.3; }
+    90% { opacity: 0.3; }
+    100% { transform: translateX(40px); opacity: 0; }
+  }
+}
+
+@layer utilities {
+  .animate-slow-scroll {
+    animation: slow-scroll 20s linear infinite alternate;
+  }
+  .animate-float {
+    animation: float 4s ease-in-out infinite;
+  }
+  .animate-drift {
+    animation: drift 10s linear infinite;
+  }
+}
+
+@layer base {
+  body {
+    @apply bg-brand-background text-brand-on-background font-sans antialiased;
+  }
+}
+
+@layer components {
+  .browser-window {
+    @apply bg-brand-surface border border-brand-outline rounded-brand-card shadow-brand-card overflow-hidden flex flex-col;
+  }
+
+  .nav-link {
+    @apply text-xl font-bold transition-all duration-200 hover:text-brand-primary cursor-pointer border-b-2 border-transparent hover:border-brand-primary py-1;
+  }
+}

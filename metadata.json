@@ -1,0 +1,8 @@
+{
+  "name": "Facundo Paduczak Portfolio",
+  "description": "Creative Strategist portfolio with a retro-modern windowed interface and cool-blue design language.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

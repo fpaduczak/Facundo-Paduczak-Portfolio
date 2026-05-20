@@ -1,0 +1,40 @@
+{
+  "entities": {
+    "Message": {
+      "title": "Contact Message",
+      "description": "Messages sent from the contact form",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Sender's name"
+        },
+        "email": {
+          "type": "string",
+          "description": "Sender's email"
+        },
+        "content": {
+          "type": "string",
+          "description": "Message content"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Creation timestamp"
+        }
+      },
+      "required": [
+        "name",
+        "email",
+        "content",
+        "createdAt"
+      ]
+    }
+  },
+  "firestore": {
+    "/messages/{messageId}": {
+      "schema": "Message",
+      "description": "Public messages sent to the copywriter"
+    }
+  }
+}
