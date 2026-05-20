@@ -272,7 +272,7 @@ function AboutView({ onNavigate }: { onNavigate: (s: Section) => void }) {
         >
            <div className="w-32 h-32 rounded-3xl bg-white border-2 border-brand-outline shadow-sm overflow-hidden flex items-center justify-center group/avatar relative hover:border-brand-primary transition-all duration-500">
               <img 
-                src="/src/assets/images/regenerated_image_1779227097253.jpg" 
+                src="/src/assets/images/regenerated_image_1779244109815.jpg" 
                 alt="Facundo Paduczak" 
                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                 referrerPolicy="no-referrer"
@@ -469,7 +469,11 @@ function WorksView({ onNavigate }: { onNavigate: (s: Section) => void }) {
         <h2 className="text-xs font-black uppercase tracking-[0.2em] text-brand-primary">Highlight</h2>
         <div className="grid md:grid-cols-2 gap-8 items-center bg-brand-surface-soft/30 p-8 rounded-3xl border border-brand-outline">
           <div className="aspect-video bg-brand-on-background/5 rounded-2xl flex items-center justify-center border border-brand-outline group cursor-pointer overflow-hidden relative">
-             <img src="/src/assets/images/united_airlines_work_highlight_1779219596913.png" alt="United Airlines Highlight" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+             <img 
+               src="/src/assets/images/united_airlines_highlight_jpg_1779244217818.png" 
+               alt="United Airlines Highlight" 
+               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
+             />
              <div className="absolute inset-0 bg-brand-primary/0 group-hover:bg-brand-primary/10 transition-colors" />
           </div>
           <div className="space-y-4">
