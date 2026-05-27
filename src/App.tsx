@@ -12,7 +12,6 @@ import {
   ExternalLink,
   Download,
   FileText,
-  ChevronDown,
   Search,
   Globe,
   Clock,
@@ -27,10 +26,7 @@ import {
   Monitor,
   Map,
   Wine,
-  Cloud,
-  Send,
-  Loader2,
-  CheckCircle2
+  Cloud
 } from 'lucide-react';
 import { 
   CONTACT_INFO, 
@@ -41,9 +37,6 @@ import {
   SERVICES 
 } from './constants';
 import { useAppSounds } from './hooks/useAppSounds';
-import { db } from './lib/firebase';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
-import { OperationType, handleFirestoreError } from './lib/firestore-utils';
 
 type Section = 'home' | 'about' | 'experience' | 'works' | 'contact';
 
@@ -68,9 +61,32 @@ export default function App() {
           <motion.div
             key={section}
             initial={{ opacity: 0, scale: 0.98, y: 10 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
+            animate={{ 
+              opacity: 1, 
+              scale: 1, 
+              y: 0,
+              borderColor: ["#dbe4f0", "#93c5fd", "#dbe4f0"],
+              boxShadow: [
+                "0 18px 44px rgba(15, 23, 42, 0.08)",
+                "0 18px 44px rgba(37, 99, 235, 0.12)",
+                "0 18px 44px rgba(15, 23, 42, 0.08)"
+              ]
+            }}
             exit={{ opacity: 0, scale: 1.02, y: -10 }}
-            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ 
+              duration: 0.4, 
+              ease: [0.22, 1, 0.36, 1],
+              borderColor: {
+                duration: 4,
+                repeat: Infinity,
+                ease: "easeInOut"
+              },
+              boxShadow: {
+                duration: 4,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }
+            }}
             className="w-full h-full browser-window"
           >
             {/* Browser Header */}
@@ -459,7 +475,6 @@ function ExperienceView({ onNavigate }: { onNavigate: (s: Section) => void }) {
 }
 
 function WorksView({ onNavigate }: { onNavigate: (s: Section) => void }) {
-  const [openIndex, setOpenIndex] = useState<number | null>(0);
   const { playClick, playHover } = useAppSounds();
 
   return (
@@ -493,48 +508,7 @@ function WorksView({ onNavigate }: { onNavigate: (s: Section) => void }) {
         </div>
       </div>
 
-      {/* Services Accordion */}
-      <div className="space-y-8">
-        <div className="space-y-2">
-          <h2 className="text-3xl font-black uppercase">Things I do. Well.</h2>
-          <p className="text-brand-on-background/60 italic font-medium">The full list is long. Here's what actually matters:</p>
-        </div>
 
-        <div className="space-y-2">
-          {SERVICES.map((service, i) => (
-            <div key={i} className="border border-brand-outline rounded-2xl overflow-hidden hover:border-brand-primary transition-colors">
-              <button 
-                onClick={() => {
-                  playClick();
-                  setOpenIndex(openIndex === i ? null : i);
-                }}
-                onMouseEnter={() => playHover()}
-                className="w-full flex items-center justify-between p-6 text-left hover:bg-brand-surface-soft/50 transition-colors group"
-              >
-                <span className="text-xl font-bold uppercase">{service.title}</span>
-                <ChevronDown 
-                  size={20} 
-                  className={`transition-transform duration-300 ${openIndex === i ? 'rotate-180' : ''}`} 
-                />
-              </button>
-              <AnimatePresence>
-                {openIndex === i && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: 'auto', opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <div className="p-6 pt-0 text-brand-on-background/80 text-lg leading-relaxed">
-                      {service.body}
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          ))}
-        </div>
-      </div>
 
       <div className="flex justify-between items-center py-12">
         <button 
@@ -564,30 +538,6 @@ function WorksView({ onNavigate }: { onNavigate: (s: Section) => void }) {
 
 function ContactView({ onNavigate }: { onNavigate: (s: Section) => void }) {
   const { playClick, playHover } = useAppSounds();
-  const [formData, setFormData] = useState({ name: '', email: '', content: '' });
-  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!formData.name || !formData.email || !formData.content) return;
-
-    setStatus('loading');
-    playClick();
-
-    const path = 'messages';
-    try {
-      await addDoc(collection(db, path), {
-        ...formData,
-        createdAt: serverTimestamp(),
-      });
-      setStatus('success');
-      setFormData({ name: '', email: '', content: '' });
-    } catch (error) {
-      console.error("Error sending message:", error);
-      setStatus('error');
-      handleFirestoreError(error, OperationType.CREATE, path);
-    }
-  };
 
   return (
     <div className="space-y-12">
@@ -602,93 +552,51 @@ function ContactView({ onNavigate }: { onNavigate: (s: Section) => void }) {
         </p>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-12">
-        <div className="space-y-4">
-          <div className="grid grid-cols-1 gap-4">
-            <ContactButton 
-              icon={<Mail size={20} />} 
-              label="Email" 
-              value={CONTACT_INFO.email} 
-              href={`mailto:${CONTACT_INFO.email}`} 
-              onAction={() => playClick()}
-              onHover={() => playHover()}
-            />
-            <ContactButton 
-              icon={<Linkedin size={20} />} 
-              label="LinkedIn" 
-              value="Facundo Paduczak" 
-              href={CONTACT_INFO.linkedin} 
-              onAction={() => playClick()}
-              onHover={() => playHover()}
-            />
-             <div className="flex justify-start mt-4">
-              <a 
-                href="/Facundo_Paduczak_CV_ATS.txt" 
-                download="Facundo_Paduczak_CV_ATS.txt"
-                onClick={() => playClick()}
-                onMouseEnter={() => playHover()}
-                className="flex items-center justify-center gap-3 bg-brand-on-background text-white font-black uppercase tracking-widest text-[10px] py-4 px-8 rounded-full hover:bg-brand-primary transition-all active:scale-95 shadow-xl hover:shadow-brand-primary/20"
-              >
-                <FileText size={16} /> Download CV [ATS]
-              </a>
-            </div>
-          </div>
-        </div>
+      <div className="grid sm:grid-cols-2 gap-4">
+        <ContactButton 
+          icon={<Mail size={20} />} 
+          label="Email" 
+          value={CONTACT_INFO.email} 
+          href={`mailto:${CONTACT_INFO.email}`} 
+          onAction={() => playClick()}
+          onHover={() => playHover()}
+        />
+        <ContactButton 
+          icon={<Phone size={20} />} 
+          label="Phone" 
+          value={CONTACT_INFO.phone} 
+          href={`tel:${CONTACT_INFO.phone.replace(/ /g, '')}`} 
+          onAction={() => playClick()}
+          onHover={() => playHover()}
+        />
+        <ContactButton 
+          icon={<Linkedin size={20} />} 
+          label="LinkedIn" 
+          value="Facundo Paduczak" 
+          href={CONTACT_INFO.linkedin} 
+          onAction={() => playClick()}
+          onHover={() => playHover()}
+        />
+        <ContactButton 
+          icon={<ExternalLink size={20} />} 
+          label="Portfolio" 
+          value="Behance Collection" 
+          href={CONTACT_INFO.portfolio} 
+          onAction={() => playClick()}
+          onHover={() => playHover()}
+        />
+      </div>
 
-        <div className="bg-white border border-brand-outline rounded-3xl p-8 shadow-sm">
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-1">
-              <label className="text-[10px] font-black uppercase text-brand-on-background/40 ml-1">Name</label>
-              <input 
-                required
-                type="text" 
-                placeholder="Facundo"
-                value={formData.name}
-                onChange={e => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                className="w-full h-12 px-4 rounded-xl border border-brand-outline focus:border-brand-primary focus:ring-1 focus:ring-brand-primary outline-none transition-all font-semibold"
-              />
-            </div>
-            <div className="space-y-1">
-              <label className="text-[10px] font-black uppercase text-brand-on-background/40 ml-1">Email</label>
-              <input 
-                required
-                type="email" 
-                placeholder="facundo@example.com"
-                value={formData.email}
-                onChange={e => setFormData(prev => ({ ...prev, email: e.target.value }))}
-                className="w-full h-12 px-4 rounded-xl border border-brand-outline focus:border-brand-primary focus:ring-1 focus:ring-brand-primary outline-none transition-all font-semibold"
-              />
-            </div>
-            <div className="space-y-1">
-              <label className="text-[10px] font-black uppercase text-brand-on-background/40 ml-1">Brief / Message</label>
-              <textarea 
-                required
-                rows={4}
-                placeholder="Describe what you have in mind..."
-                value={formData.content}
-                onChange={e => setFormData(prev => ({ ...prev, content: e.target.value }))}
-                className="w-full p-4 rounded-xl border border-brand-outline focus:border-brand-primary focus:ring-1 focus:ring-brand-primary outline-none transition-all font-semibold resize-none"
-              />
-            </div>
-            <button 
-              disabled={status === 'loading' || status === 'success'}
-              className={`w-full h-14 rounded-full font-black uppercase tracking-widest text-sm flex items-center justify-center gap-3 transition-all ${
-                status === 'success' ? 'bg-brand-success text-white' : 'bg-brand-primary text-white hover:bg-brand-primary-strong shadow-lg active:scale-95 disabled:opacity-50'
-              }`}
-            >
-              {status === 'loading' ? (
-                <>Sending... <Loader2 size={18} className="animate-spin" /></>
-              ) : status === 'success' ? (
-                <>Sent! <CheckCircle2 size={18} /></>
-              ) : (
-                <>Send Brief <Send size={18} /></>
-              )}
-            </button>
-            {status === 'error' && (
-              <p className="text-center text-xs font-bold text-red-500 mt-2">Something went wrong. Please try again.</p>
-            )}
-          </form>
-        </div>
+      <div className="flex justify-center mt-8">
+        <a 
+          href="/Facundo_Paduczak_CV_ATS.pdf" 
+          download="Facundo_Paduczak_CV_ATS.pdf"
+          onClick={() => playClick()}
+          onMouseEnter={() => playHover()}
+          className="flex items-center justify-center gap-3 bg-brand-on-background text-white font-black uppercase tracking-widest text-[10px] py-4 px-8 rounded-full hover:bg-brand-primary transition-all active:scale-95 shadow-xl hover:shadow-brand-primary/20"
+        >
+          <FileText size={16} /> Download CV [ATS]
+        </a>
       </div>
 
       <div className="flex justify-between items-center py-12">
