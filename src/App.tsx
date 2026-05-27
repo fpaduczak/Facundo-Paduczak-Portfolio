@@ -26,7 +26,8 @@ import {
   Monitor,
   Map,
   Wine,
-  Cloud
+  Cloud,
+  ChevronDown
 } from 'lucide-react';
 import { 
   CONTACT_INFO, 
@@ -286,16 +287,6 @@ function AboutView({ onNavigate }: { onNavigate: (s: Section) => void }) {
           transition={{ duration: 0.6, ease: "easeOut", delay: 0.1 }}
           className="flex items-center gap-6"
         >
-           <div className="w-32 h-32 rounded-3xl bg-white border-2 border-brand-outline shadow-sm overflow-hidden flex items-center justify-center group/avatar relative hover:border-brand-primary transition-all duration-500">
-              <img 
-                src="/src/assets/images/regenerated_image_1779244109815.jpg" 
-                alt="Facundo Paduczak" 
-                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                referrerPolicy="no-referrer"
-              />
-              <div className="absolute inset-0 bg-brand-primary/10 mix-blend-overlay" />
-              <div className="absolute inset-0 border-4 border-brand-primary/0 group-hover:border-brand-primary/10 rounded-2xl transition-colors pointer-events-none" />
-           </div>
            <div className="space-y-1">
              <motion.p 
               className="text-3xl font-black italic uppercase tracking-tighter"
@@ -476,39 +467,169 @@ function ExperienceView({ onNavigate }: { onNavigate: (s: Section) => void }) {
 
 function WorksView({ onNavigate }: { onNavigate: (s: Section) => void }) {
   const { playClick, playHover } = useAppSounds();
+  const [openIndex, setOpenIndex] = React.useState<number | null>(null);
+
+  const TOOLKIT_SKILLS = [
+    {
+      title: "Content & storytelling",
+      description: "Campaigns, copy (ATL / BTL / digital), branded content, video scripts, editorial. Words that earn attention — and keep it."
+    },
+    {
+      title: "Digital & social",
+      description: "IG, TikTok, LinkedIn, X. Reels, Shorts, paid social, UGC. Short-form built for real feeds, not portfolio screenshots."
+    },
+    {
+      title: "Strategy & planning",
+      description: "Brand positioning, integrated campaigns, cultural insights, go-to-market. The thinking behind the doing."
+    },
+    {
+      title: "AI-powered creative",
+      description: "LLMs, prompt engineering, AI workflows, chatbots, immersive experiences. The future, used responsibly."
+    },
+    {
+      title: "Experiential & BTL",
+      description: "Activations, launches, POP, merch, sponsorships. Moments people remember — and actually talk about."
+    },
+    {
+      title: "Media & PR",
+      description: "Press campaigns, media kits, partnerships, earned media. Getting coverage that doesn't feel like coverage."
+    }
+  ];
 
   return (
     <div className="space-y-16">
       {/* Featured Work */}
       <div className="space-y-8">
         <h2 className="text-xs font-black uppercase tracking-[0.2em] text-brand-primary">Highlight</h2>
-        <div className="grid md:grid-cols-2 gap-8 items-center bg-brand-surface-soft/30 p-8 rounded-3xl border border-brand-outline">
-          <div className="aspect-video bg-brand-on-background/5 rounded-2xl flex items-center justify-center border border-brand-outline group cursor-pointer overflow-hidden relative">
-             <img 
-               src="/src/assets/images/united_airlines_highlight_jpg_1779244217818.png" 
-               alt="United Airlines Highlight" 
-               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
-             />
-             <div className="absolute inset-0 bg-brand-primary/0 group-hover:bg-brand-primary/10 transition-colors" />
-          </div>
+        <div className="max-w-2xl mx-auto bg-brand-surface-soft/30 p-8 rounded-3xl border border-brand-outline space-y-4 text-center">
           <div className="space-y-4">
+            {/* Dynamic Animated Clouds Sky */}
+            <div className="relative w-full h-32 md:h-36 overflow-hidden rounded-2xl bg-gradient-to-b from-blue-500/10 via-blue-400/5 to-transparent border border-blue-100/20 flex items-center justify-center mb-6 shadow-inner select-none">
+              {/* Floating Airplane */}
+              <motion.div
+                animate={{
+                  y: [-5, 5, -5],
+                  rotate: [-1, 2, -1],
+                }}
+                transition={{
+                  duration: 5,
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }}
+                className="absolute z-10 text-brand-primary/40 flex flex-col items-center gap-1"
+              >
+                <Plane size={36} className="rotate-[15deg] text-brand-primary filter drop-shadow-sm" strokeWidth={1.5} />
+                <span className="text-[8px] font-black tracking-widest uppercase opacity-40">UNITED</span>
+              </motion.div>
+
+              {/* Drifting Clouds */}
+              {[
+                { size: 48, opacity: 0.5, duration: 22, delay: 0, top: "15%" },
+                { size: 64, opacity: 0.35, duration: 32, delay: -10, top: "40%" },
+                { size: 36, opacity: 0.6, duration: 16, delay: -4, top: "10%" },
+                { size: 52, opacity: 0.45, duration: 27, delay: -18, top: "55%" },
+                { size: 40, opacity: 0.3, duration: 20, delay: -7, top: "30%" },
+              ].map((c, idx) => (
+                <motion.div
+                  key={idx}
+                  initial={{ x: "-100%" }}
+                  animate={{ x: "100%" }}
+                  transition={{
+                    duration: c.duration,
+                    repeat: Infinity,
+                    ease: "linear",
+                    delay: c.delay,
+                  }}
+                  className="absolute pointer-events-none"
+                  style={{ 
+                    top: c.top, 
+                    width: "100%",
+                    display: "flex",
+                    justifyContent: "flex-start"
+                  }}
+                >
+                  <Cloud 
+                    size={c.size} 
+                    className="text-brand-primary/15 fill-brand-primary/[0.02]" 
+                    style={{ opacity: c.opacity }} 
+                  />
+                </motion.div>
+              ))}
+
+              {/* Sun/Light subtle ambient glow */}
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.7)_0%,transparent_100%)] pointer-events-none" />
+            </div>
+
             <h3 className="text-3xl font-black uppercase leading-[1.1]">{WORKS_HIGHLIGHTS[0].title}</h3>
             <p className="text-brand-on-background/80 leading-relaxed">
               {WORKS_HIGHLIGHTS[0].description}
             </p>
-            <a 
-              href={WORKS_HIGHLIGHTS[0].link} 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 bg-brand-primary text-white font-bold py-3 px-6 rounded-full hover:bg-brand-primary-strong transition-all hover:shadow-lg active:scale-95"
-            >
-              {WORKS_HIGHLIGHTS[0].cta} <ExternalLink size={16} />
-            </a>
+            <div className="pt-2">
+              <a 
+                href={WORKS_HIGHLIGHTS[0].link} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                onClick={() => playClick()}
+                onMouseEnter={() => playHover()}
+                className="inline-flex items-center gap-2 bg-brand-primary text-white font-bold py-3 px-6 rounded-full hover:bg-brand-primary-strong transition-all hover:shadow-lg active:scale-95"
+              >
+                {WORKS_HIGHLIGHTS[0].cta} <ExternalLink size={16} />
+              </a>
+            </div>
           </div>
         </div>
       </div>
 
-
+      {/* Skills Toolkit Section */}
+      <div className="space-y-6 max-w-2xl mx-auto">
+        <h2 className="text-xs font-black uppercase tracking-[0.2em] text-brand-primary">SKILLS: TOOLKIT</h2>
+        <div className="border border-brand-outline rounded-3xl overflow-hidden divide-y divide-brand-outline bg-white shadow-sm">
+          {TOOLKIT_SKILLS.map((item, idx) => {
+            const isOpen = openIndex === idx;
+            return (
+              <div 
+                key={idx} 
+                className={`group transition-all duration-300 ${isOpen ? 'bg-brand-primary-soft/5 border-l-4 border-l-brand-primary' : 'hover:bg-brand-surface-soft/20 border-l-4 border-l-transparent'}`}
+              >
+                <button
+                  onClick={() => {
+                    playClick();
+                    setOpenIndex(isOpen ? null : idx);
+                  }}
+                  onMouseEnter={() => playHover()}
+                  className="w-full h-16 px-6 flex items-center justify-between text-left font-bold text-sm tracking-tight text-brand-on-background group-hover:text-brand-primary transition-colors focus:outline-none select-none"
+                >
+                  <span className="font-bold tracking-tight text-base uppercase">{item.title}</span>
+                  <motion.div
+                    animate={{ rotate: isOpen ? 180 : 0 }}
+                    transition={{ duration: 0.3, ease: "easeInOut" }}
+                    className="text-brand-on-background/40 group-hover:text-brand-primary"
+                  >
+                    <ChevronDown size={18} />
+                  </motion.div>
+                </button>
+                
+                <AnimatePresence initial={false}>
+                  {isOpen && (
+                    <motion.div
+                      key="content"
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                      className="overflow-hidden"
+                    >
+                      <div className="px-6 pb-6 text-brand-on-background/80 text-xs sm:text-sm leading-relaxed font-semibold">
+                        {item.description}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            );
+          })}
+        </div>
+      </div>
 
       <div className="flex justify-between items-center py-12">
         <button 
