@@ -712,6 +712,8 @@ function ContactView({ onNavigate }: { onNavigate: (s: Section) => void }) {
         <a 
           href="/Facundo_Paduczak_CV_ATS.pdf" 
           download="Facundo_Paduczak_CV_ATS.pdf"
+          target="_blank"
+          rel="noopener noreferrer"
           onClick={() => playClick()}
           onMouseEnter={() => playHover()}
           className="flex items-center justify-center gap-3 bg-brand-on-background text-white font-black uppercase tracking-widest text-[10px] py-4 px-8 rounded-full hover:bg-brand-primary transition-all active:scale-95 shadow-xl hover:shadow-brand-primary/20"

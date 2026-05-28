@@ -3,16 +3,20 @@ import fs from 'fs';
 import path from 'path';
 
 // Helper function to create the ATS CV PDF
-function createATSCV(outputPath: string) {
-  // 0.5 inch margins are common for resumes
-  const doc = new PDFDocument({
-    size: 'LETTER',
-    margins: { top: 40, bottom: 40, left: 45, right: 45 },
-    bufferPages: true
-  });
+function createATSCV(outputPath: string): Promise<void> {
+  return new Promise((resolve, reject) => {
+    // 0.5 inch margins are common for resumes
+    const doc = new PDFDocument({
+      size: 'LETTER',
+      margins: { top: 40, bottom: 40, left: 45, right: 45 },
+      bufferPages: true
+    });
 
-  const writeStream = fs.createWriteStream(outputPath);
-  doc.pipe(writeStream);
+    const writeStream = fs.createWriteStream(outputPath);
+    doc.pipe(writeStream);
+    
+    writeStream.on('finish', resolve);
+    writeStream.on('error', reject);
 
   // Colors
   const textColor = '#333333';
@@ -211,17 +215,22 @@ function createATSCV(outputPath: string) {
   doc.font('Helvetica').text('Spanish (Native)   |   English (Bilingual C2 — Cambridge FCE Certified)   |   Portuguese (Intermediate B1)');
 
   doc.end();
+  });
 }
 
 // Helper function to create the One Page CV PDF (styled, matching design)
-function createOnePageCV(outputPath: string) {
-  const doc = new PDFDocument({
-    size: 'LETTER',
-    margins: { top: 35, bottom: 35, left: 35, right: 35 }
-  });
+function createOnePageCV(outputPath: string): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const doc = new PDFDocument({
+      size: 'LETTER',
+      margins: { top: 35, bottom: 35, left: 35, right: 35 }
+    });
 
-  const writeStream = fs.createWriteStream(outputPath);
-  doc.pipe(writeStream);
+    const writeStream = fs.createWriteStream(outputPath);
+    doc.pipe(writeStream);
+    
+    writeStream.on('finish', resolve);
+    writeStream.on('error', reject);
 
   // Design Theme colors (high contrast and crisp)
   const textColor = '#1a1a1a';
@@ -375,19 +384,24 @@ function createOnePageCV(outputPath: string) {
      .text('fpaduczak@gmail.com   |   +5491144481804   |   LinkedIn: @facundo-paduczak   |   Behance: /4e31f888', 40, 743, { align: 'center' });
 
   doc.end();
+  });
 }
 
-console.log('Generating PDFs...');
-try {
-  const publicDir = path.join(process.cwd(), 'public');
-  if (!fs.existsSync(publicDir)) {
-    fs.mkdirSync(publicDir, { recursive: true });
+async function runGeneration() {
+  console.log('Generating PDFs...');
+  try {
+    const publicDir = path.join(process.cwd(), 'public');
+    if (!fs.existsSync(publicDir)) {
+      fs.mkdirSync(publicDir, { recursive: true });
+    }
+    
+    await createATSCV(path.join(publicDir, 'Facundo_Paduczak_CV_ATS.pdf'));
+    await createOnePageCV(path.join(publicDir, 'Facundo_Paduczak_CV_One_Page.pdf'));
+    console.log('PDFs generated successfully!');
+  } catch (err) {
+    console.error('Error generating PDFs:', err);
+    process.exit(1);
   }
-  
-  createATSCV(path.join(publicDir, 'Facundo_Paduczak_CV_ATS.pdf'));
-  createOnePageCV(path.join(publicDir, 'Facundo_Paduczak_CV_One_Page.pdf'));
-  console.log('PDFs generated successfully!');
-} catch (err) {
-  console.error('Error generating PDFs:', err);
-  process.exit(1);
 }
+
+runGeneration();
